@@ -20,7 +20,7 @@ namespace TextDetector
             public TextAnnotation.Types.DetectedBreak.Types.BreakType? BreakType { get; set; }
         }
 
-        private string _googleCredentialFilePath = null;
+        private readonly string _googleCredentialFilePath = null;
 
         public GoogleCloudVisionDetector()
         {
@@ -98,8 +98,13 @@ namespace TextDetector
                 client = ImageAnnotatorClient.Create();
             }
 
+            //
+            var context = new ImageContext();
+            context.LanguageHints.Add("ja");
+            context.LanguageHints.Add("en");
+
             // Detect text
-            var response = client.DetectDocumentText(image);
+            var response = client.DetectDocumentText(image, context);
             if (response == null || string.IsNullOrWhiteSpace(response.Text))
                 return false;
 
@@ -124,7 +129,7 @@ namespace TextDetector
                                 Text = symbols[i].Text,
                                 SpaceWidth = symbols[i + 1].BoundingBox.Vertices.Min(v => v.X)
                                         - symbols[i].BoundingBox.Vertices.Max(v => v.X),
-                                BreakType = symbols[i].Property.DetectedBreak?.Type
+                                BreakType = symbols[i].Property?.DetectedBreak?.Type
                             };
 
                             list.Add(s);

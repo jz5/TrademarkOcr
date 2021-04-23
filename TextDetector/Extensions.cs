@@ -7,11 +7,12 @@ namespace TextDetector
     public static class Extensions
     {
         // https://docs.microsoft.com/ja-jp/dotnet/csharp/programming-guide/concepts/linq/how-to-add-custom-methods-for-linq-queries
-        public static int Median(this IEnumerable<int> source)
+        public static int? Median(this IEnumerable<int> source)
         {
             if (source.Count() == 0)
             {
-                throw new InvalidOperationException("Cannot compute median for an empty set.");
+                //throw new InvalidOperationException("Cannot compute median for an empty set.");
+                return null;
             }
 
             var sortedList = from number in source
